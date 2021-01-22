@@ -1,0 +1,77 @@
+comandos docker:
+-Version docker
+	docker -v
+
+-Ver containers
+	docker image list 
+
+-Eliminar imagen 
+	docker rmi nombre_imagen:version
+
+-Instalar imagen
+	docker pull nombre_imagen:version
+
+-Correr imagen docker
+	docker run -it nombre:version /bin/bash
+
+-Ver que imagen se esta ejecutando
+	docker container list
+
+-Ver historico imagen ejecutada
+	docker container list -a
+
+-Eliminar container del historico
+	docker rm containerid (primero 4)
+
+-Entrar en un docker en ejecucion
+	docker exec -it contenedor bash
+
+-
+	docker star contenedor
+	
+
+
+Instalar mongodb
+	https://hub.docker.com/_/mongo
+
+1-	docker pull mongo
+2-	docker run -d -p 27017:27017 --name mongodb mongo
+3- 	docker exec -it mongodb bash
+4- 	mongo  ------> entro al shell de mongo db
+5- 	show dbs ----------> muestra las bases que tengo creadas
+
+Crear base, si existe, ingresa a la sesion de la base
+	use nombreBase
+
+Crear coleccion
+	db.createCollection('nombreColeccion')
+
+Insertar dato en la collecion
+	db.<collecion>.insertMany([{'nombre':'Alejandro', 'apellido':'Fredes', 'gradoAcademico':'Desarrollador'}, {'nombre':'Jon', 'apellido':'Papa', 'gradoAcademico':'Desarrollador'},{'nombre':'Bill', 'apellido':'Gates', 'gradoAcademico':'Manager'}])
+
+Listar Coleccion
+	db.<collecion>.find({}).pretty()
+
+
+Ver bases
+show dbs
+
+ver colleciones
+show collections
+
+eliminar datos collecion
+db.<collecion>.drop()
+
+
+Mongo Db
+instalar en nuget MongoDb.driver
+
+
+
+Instalar SQL container
+https://hub.docker.com/_/microsoft-mssql-server
+
+docker pull mcr.microsoft.com/mssql/server
+
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Faber456+" -p 1433:1433 mcr.microsoft.com/mssql/server
+

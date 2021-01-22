@@ -1,0 +1,89 @@
+Agregar proyecto "Aplicacion web ASP.NET Core" => ASP.NET CORe web api
+
+Instlar nugget => Ocelot
+
+Startup => configure service =>
+
+    services.AddOcelot();
+    //services.AddControllers(); comento
+
+    => configure
+
+    public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+
+            await app.UseOcelot(); //agrego
+        }
+
+Agrego archivo ocelot.json //mapeo el gateway con los microservicios
+
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/LibreriaServicio",  //API A LA QUE DEBE CONECTARSE
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": "52378"
+        }
+      ],
+      "UpstreamPathTemplate": "/autorLista",                    //COMO RECIBE DESDE EL CLIENTE
+      "UpstreamHttpMethod":  ["POST","GET","PUT","DELETE"] ,     //METODOS PERMITIDOS
+      "AuthenticationOptions": {                               //para la autenticacion
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
+    }
+  ]
+  
+}
+
+PROGRAM.CS
+
+public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                })
+                            ///agrero esto
+                .ConfigureAppConfiguration((hostingContext, config) =>
+                {
+                    config.AddJsonFile($"ocelot.json");
+                });
+
+
+Instalar desde nuget:
+Microsoft.AspNetCore.Authentication.JwtBearer
+En startup.cs => Register agregar (es lo mismo que debe estar en la api de seguridad) debajo de  services.AddOcelot();
+
+var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("iM5D6MrA00bdKN2RboXtR7Cx94qnfjtj"));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
+            {
+                opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = key,
+                    ValidateAudience = false,
+                    ValidateIssuer = false
+                };
+            });
+
+            => Configure
+
+            app.UseAuthentication();
